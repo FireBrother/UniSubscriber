@@ -56,8 +56,14 @@ class BaseAnnouncer(object):
         self.logger.info('%s(%s) has been started.', self.name, self.proc.pid)
 
     def terminate(self):
-        self.proc.terminate()
-        self.logger.info('%s(%s) has been terminated.', self.name, self.proc.pid)
+        if self.is_alive():
+            self.proc.terminate()
+            self.logger.info('%s(%s) has been terminated.', self.name, self.proc.pid)
+        else:
+            self.logger.info('%s(%s) is not running.', self.name, self.proc.pid)
+
+    def is_alive(self):
+        return self.proc.is_alive()
 
     @abstractmethod
     def announce(self, msg):

@@ -30,6 +30,8 @@ class SubscriberMaster(object):
         self.__monitors = {}
         self.__announcers = {}
 
+        self.__activated_item = set()
+
         self.monitor_msg_queue = Queue()
         self.announcer_msg_queue = Queue()
 
@@ -47,19 +49,25 @@ class SubscriberMaster(object):
         if item.name in item_dict:
             self.logger.error('%s already in %s list.', item.name, base_class.__name__)
             raise KeyError
-        item.msg_queue = msg_queue
+        if base_class is BaseMonitor:
+            item.msg_queue = msg_queue
         item_dict[item.name] = item
 
     @key_check
     def _del_item(self, item_dict, name, base_class):
+        if base_class.__name__+name in self.__activated_item:
+            self.logger.warning('Deleting active item: %s, auto deactivated.', name)
+            self._deactivate_item(item_dict, name, base_class)
         del item_dict[name]
 
     @key_check
     def _activate_item(self, item_dict, name, base_class):
+        self.__activated_item.add(base_class.__name__+name)
         item_dict[name].start()
 
     @key_check
     def _deactivate_item(self, item_dict, name, base_class):
+        self.__activated_item.remove(base_class.__name__+name)
         item_dict[name].terminate()
 
     def add_monitor(self, monitor):
@@ -91,7 +99,9 @@ class SubscriberMaster(object):
             msg = self.monitor_msg_queue.get()
             self.logger.info('Msg received.')
             self.logger.debug(msg)
-            self.announcer_msg_queue.put(msg)
+            for announcer in self.__announcers:
+                if 'BaseAnnouncer'+announcer in self.__activated_item:
+                    self.__announcers[announcer].msg_queue.put(msg)
 
     def start(self):
         for name in self.__monitors:
