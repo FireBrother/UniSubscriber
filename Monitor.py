@@ -78,6 +78,10 @@ class BaseMonitor(object):
                 _keys = ['prev_content', 'now_content', 'diff_content']
                 _msg = dict((k, self.__dict__[k]) for k in _keys)
                 _msg.update(self.gen_msg())
+                _required_keys = ['msg', 'status']
+                for k in _required_keys:
+                    if k not in _msg:
+                        self.logger.warning('Required key not included: \"{}\"'.format(k))
                 self.msg_queue.put((self.name, _msg))
                 self.prev_content = self.now_content
             json.dump(self.prev_content, open(self.save_filename, 'w'))
