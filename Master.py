@@ -111,6 +111,9 @@ class SubscriberMaster(object):
         self.proc.start()
         self.logger.info('%s(%s) has been started.', self.name, self.proc.pid)
 
+    def join(self):
+        self.proc.join()
+
     def stop(self):
         for name in self.__monitors:
             self.deactivate_monitor(name)

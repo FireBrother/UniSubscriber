@@ -3,6 +3,7 @@ import os
 import random
 
 from Announcer import BaseAnnouncer
+from Announcers.QQAnnouncer import QQAnnouncer
 from Master import SubscriberMaster
 from Monitor import BaseMonitor
 
@@ -56,12 +57,15 @@ class MyAnnouncer(BaseAnnouncer):
 
 if __name__ == '__main__':
     master = SubscriberMaster('sm1')
-    monitor = RandomMonitor('m1', interval=5)
+    monitor = RandomMonitor('m1', interval=10)
     announcer1 = MyAnnouncer(name='a1')
     announcer2 = MyAnnouncer(name='a2')
+    announcer = QQAnnouncer('qa', '1782167414', ['417462933'])
     master.add_monitor(monitor)
     master.add_announcer(announcer1)
-    master.add_announcer(announcer2)
+    # master.add_announcer(announcer2)
+    master.add_announcer(announcer)
     master.start()
+    master.join()
     # code.interact(banner="", local=locals())
 
