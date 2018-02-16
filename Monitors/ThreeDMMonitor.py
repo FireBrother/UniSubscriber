@@ -1,6 +1,10 @@
 # coding=utf-8
 import re
 import requests
+import sys
+ 
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 from Monitor import BaseMonitor
 
@@ -11,7 +15,7 @@ class ThreeDMMonitor(BaseMonitor):
         self.url = url
 
     def diff(self, prev_content, now_content):
-        return set(now_content).difference(set(prev_content))
+        return now_content != prev_content
 
     def extract_content(self):
         ret = requests.get(self.url)
@@ -20,7 +24,7 @@ class ThreeDMMonitor(BaseMonitor):
 
     def gen_msg(self):
         msg = dict()
-        msg['msg'] = '标题更新：{}'.format(self.now_content)
+        msg['msg'] = 'Change in title：{}'.format(self.now_content).encode('utf8')
         msg['status'] = 0
         return msg
 
