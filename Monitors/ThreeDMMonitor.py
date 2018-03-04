@@ -1,10 +1,6 @@
 # coding=utf-8
 import re
 import requests
-import sys
- 
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 from Monitor import BaseMonitor
 

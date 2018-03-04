@@ -1,13 +1,9 @@
 # coding=utf-8
 import re
 import requests
-import sys
 
 from bs4 import BeautifulSoup
 import getpass
- 
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 from Monitor import BaseMonitor
 
