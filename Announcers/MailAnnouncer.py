@@ -17,6 +17,9 @@ class MailAnnouncer(BaseAnnouncer):
         self.passwd = passwd
         self.receivers = receivers
 
+        smtpObj = smtplib.SMTP_SSL()
+        smtpObj.connect(self.mail_host, 465)  # 25 为 SMTP 端口号
+
     def announce(self, msg):
         smtpObj = smtplib.SMTP_SSL()
         smtpObj.connect(self.mail_host, 465)  # 25 为 SMTP 端口号
